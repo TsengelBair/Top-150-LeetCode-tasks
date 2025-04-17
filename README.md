@@ -291,7 +291,7 @@ void rotate(vector<int>& nums, int k) {
 
 Дан целочисленный массив prices, где prices[i] - это цена акции на текущий момент.
 
-Необходимо сначала купить и потом продать акцию, выручив максимальную прибыль.
+Необходимо сначала купить и потом продать акцию (покупка и продажа осуществляется единожды!), выручив максимальную прибыль.
 
 [Подробное описание](https://leetcode.com/problems/best-time-to-buy-and-sell-stock/submissions/1609542553/?envType=study-plan-v2&envId=top-interview-150)
 
@@ -334,6 +334,78 @@ public:
         }
 
         return maxProfit;
+    }
+};
+```
+
+### 122. Best Time to Buy and Sell Stock II
+
+Дан целочисленный массив prices, где prices[i] - это цена акции на текущий момент.
+
+Необходимо сначала купить и потом продать акцию, выручив максимальную прибыль, покупать и продавать можно неограниченное кол-во раз, причем можно купить и сразу продать (весь подвох кроется в этом условии), также в единый момент времени можно владеть лишь одной акцией.
+
+[Подробное описание](https://leetcode.com/problems/best-time-to-buy-and-sell-stock-ii/description/?envType=study-plan-v2&envId=top-interview-150)
+
+
+**Пример 1**
+```c++
+Input: prices = [7,1,5,3,6,4]
+Output: 7
+
+Explanation: Buy on day 2 (price = 1) and sell on day 3 (price = 5), profit = 5-1 = 4.
+Then buy on day 4 (price = 3) and sell on day 5 (price = 6), profit = 6-3 = 3.
+Total profit is 4 + 3 = 7.
+
+```
+
+**Пример 2**
+```c++
+Input: prices = [1,2,3,4,5]
+Output: 4
+
+Explanation: Buy on day 1 (price = 1) and sell on day 5 (price = 5), profit = 5-1 = 4.
+Total profit is 4.
+```
+
+**Пример 3**
+```c++
+Input: prices = [7,6,4,3,1]
+Output: 0
+
+Explanation: There is no way to make a positive profit, so we never buy the stock to achieve the maximum profit of 0.
+```
+
+Суть решения заключается в этом условии:
+ "вы можете купить акцию, а затем продать в этот же день" 
+
+ Рассмотрим на примере что это значит, предположим массив prices выглядит следующим образом:
+
+ ```c++
+ prices = [1, 10, 90];
+ ```
+
+ **Решение**
+
+ Интуитивно понятно, что самым выгодным решением будет купить акцию за одну условную единицу и продать за 90 у.е. , таким образом выручив 89 у.е.
+
+ Можно ли как то иначе получит эту сумму?
+
+ На самом деле да, мы можем купить акцию за 1 у.е., затем продать ее за 10 у.е. и сразу же купить за те же 10 у.е., для того чтобы потом продать ее за 90 у.е. и в результате мы получим точно такую сумму.
+
+Теперь становится понятно, что покупать акцию нужно тогда, как есть хотя бы минимальный профит 
+
+```c++
+class Solution {
+public:
+    int maxProfit(vector<int>& prices) {
+        int profit = 0;
+        for (int i = 1; i < prices.size(); ++i) {
+            if (prices[i] > prices[i - 1]) {
+                profit += prices[i] - prices[i - 1];
+            }
+        }
+
+        return profit;
     }
 };
 ```
