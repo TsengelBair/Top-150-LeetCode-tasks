@@ -1,39 +1,15 @@
-#include <iostream>
-#include <vector>
-
-using std::vector;
-
-int removeDuplicates(vector<int>& nums) 
-{
-    auto it = nums.begin();
-    int counter = 0;
-
-    while (it != nums.end()) {
-        auto next = it + 1;
-        if (next != nums.end() && *it == *next) {
-            nums.erase(next);
-            ++counter;
-        }
-        else {
-            ++it;
-        }
-    }
-
-    return counter;
-}
-
-int main()
-{
-    vector<int> nums = { 0, 0, 1, 1, 1, 2, 2, 3, 3, 4 }; 
-
-    int res = removeDuplicates(nums);
-    std::cout << "Counter " << res << std::endl;
-
-    for (const int& elem : nums) {
-        std::cout << elem << " ";
-    }
+class Solution {
+    public:
+        int removeDuplicates(vector<int>& nums) {
+            int indexForUniqueElem = 1; // because nums[0] is always unique
+            // compare cure and previous
+            for (int i = 1; i < nums.size(); ++i) {
+                if (nums[i] != nums[i - 1]) {
+                    nums[indexForUniqueElem] = nums[i];
+                    ++indexForUniqueElem;
+                }
+            }
     
-
-    return 0;
-}
-
+            return indexForUniqueElem;
+        }
+};
