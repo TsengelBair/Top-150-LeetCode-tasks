@@ -182,3 +182,41 @@ nums = [1,1,2]
 Рассмотрим алгоритм на следующем примере 
 
 ![Иллюстрация](img/26.jpg)
+
+### 80. Remove Duplicates from Sorted Array II
+
+Пока что пропустил
+
+### 169. Majority Element
+
+Дан целочисленный массив nums, необходимо вернуть наиболее часто встречающийся элемент (элемент, который появляется более ⌊n / 2⌋ раз, где n - размер массива).
+
+**Пример 1**
+```c++
+Input: nums = [3,2,3]
+Output: 3
+```
+
+**Пример 2**
+```c++
+Input: nums = [2,2,1,1,1,2,2]
+Output: 2
+```
+
+Решим с помощью hashMap (словарь на основе хэш таблицы) просто посчитав кол-во вхождений каждого числа
+
+```c++
+int majorityElement(vector<int>& nums) {
+    unordered_map<int, int>hash;
+    int majority = nums.size() / 2;
+    
+    for (int i = 0; i < nums.size(); ++i) {
+        ++hash[nums[i]];
+        if (hash[nums[i]] > majority) {
+            return nums[i];
+        }
+    }
+    
+    return -1;
+}
+```
