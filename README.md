@@ -145,6 +145,8 @@ int removeElement(vector<int>& nums, int val) {
 
 Дан целочисленный массив nums, отсортированный в порядке возрастания, необходимо удалить дубли "на месте" причем так, чтобы массив остался отсортированным и вернуть число уникальных элементов. Как и в предыдущей задаче, неважно что за элементы будут содержаться после уникальных
 
+[Подробное описание](https://leetcode.com/problems/remove-duplicates-from-sorted-array/?envType=study-plan-v2&envId=top-interview-150)
+
 **Пример 1**
 ```c++
 Input: nums = [1,1,2]
@@ -191,6 +193,8 @@ nums = [1,1,2]
 
 Дан целочисленный массив nums, необходимо вернуть наиболее часто встречающийся элемент (элемент, который появляется более ⌊n / 2⌋ раз, где n - размер массива).
 
+[Подробное описание](https://leetcode.com/problems/majority-element/?envType=study-plan-v2&envId=top-interview-150)
+
 **Пример 1**
 ```c++
 Input: nums = [3,2,3]
@@ -224,6 +228,8 @@ int majorityElement(vector<int>& nums) {
 ### 189. Rotate Array
 
 Дан целочисленный массив nums, необходимо "перевернуть" его заданное k количество раз
+
+[Подробное описание](https://leetcode.com/problems/rotate-array/description/?envType=study-plan-v2&envId=top-interview-150)
 
 **Пример 1**
 ```c++
@@ -279,4 +285,55 @@ void rotate(vector<int>& nums, int k) {
     
     nums = tmp; 
     }
+```
+
+### 121. Best Time to Buy and Sell Stock
+
+Дан целочисленный массив prices, где prices[i] - это цена акции на текущий момент.
+
+Необходимо сначала купить и потом продать акцию, выручив максимальную прибыль.
+
+[Подробное описание](https://leetcode.com/problems/best-time-to-buy-and-sell-stock/submissions/1609542553/?envType=study-plan-v2&envId=top-interview-150)
+
+**Пример 1**
+```c++
+Input: prices = [7,1,5,3,6,4]
+Output: 5
+
+Explanation: Buy on day 2 (price = 1) and sell on day 5 (price = 6), profit = 6-1 = 5.
+Note that buying on day 2 and selling on day 1 is not allowed because you must buy before you sell.
+```
+
+**Пример 2**
+```c++
+Input: prices = [7,6,4,3,1]
+Output: 0
+
+Explanation: In this case, no transactions are done and the max profit = 0.
+```
+
+**Решение**
+
+Для соблюдения условия "сначала купить - потом продать" используем обычный цикл, в первой проверке постараемся обновить минимально известную цену и уже в следующей будем из элемента текущей итерации вычитать минимально известный (это обеспечит условие, что сначала акция должна быть куплена)
+
+```c++
+class Solution {
+public:
+    int maxProfit(vector<int>& prices) {
+        int minPrice = prices[0];
+        int maxProfit = 0;
+
+        for (int i = 1; i < prices.size(); ++i) {
+            if (prices[i] < minPrice) {
+                minPrice = prices[i];
+            }
+
+            if (prices[i] - minPrice > maxProfit) {
+                maxProfit = prices[i] - minPrice;
+            }
+        }
+
+        return maxProfit;
+    }
+};
 ```
