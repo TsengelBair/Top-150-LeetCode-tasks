@@ -409,3 +409,73 @@ public:
     }
 };
 ```
+
+### 55. Jump Game
+
+Дан целочисленный неотрицательный массив nums, где каждый элемент это максимальное число, на которое можно прыгнуть вперед по массиву с текущей позиции.
+
+Необходимо вернуть true, если со стартовой позиции (нулевого элемента) можно добраться до последнего.
+
+[Подробное описание](https://leetcode.com/problems/jump-game/description/?envType=study-plan-v2&envId=top-interview-150)
+
+
+**Пример 1**
+```c++
+Input: nums = [2,3,1,1,4]
+Output: true
+
+Explanation: Jump 1 step from index 0 to 1, then 3 steps to the last index.
+```
+
+**Пример 2**
+```c++
+Input: nums = [3,2,1,0,4]
+Output: false
+
+Explanation: You will always arrive at index 3 no matter what. Its maximum jump length is 0, which makes it impossible to reach the last index.
+```
+
+ **Решение**
+
+ Основная идея алгоритма заключается в обновлении элемента до которого нужно добраться
+
+ Рассмотрим первый пример
+
+ ```c++
+                 j
+ nums = [2,3,1,1,4]
+
+ j - обозначает элемент до которого нужно добраться
+ ```
+
+ Можем ли мы сказать, что добравшись до j - 1 элемента, мы доберемся до j элемента?
+
+ Да, для этого осуществим проверку
+
+ ```c++
+if (i + nums[i] >= j) j = i; // обновляем последний элемент
+ ```
+
+ В противном случае просто пропускаем.
+
+Если до элемента можно добраться, то последним элементом (после полной итерации) будет стартовый (нулевой) элемент.
+
+```c++
+class Solution {
+public:
+    bool canJump(vector<int>& nums) {
+        int n = nums.size();
+        int currentLastPos = n - 1;
+        // значение nums[nums.size() - 1] элемента неважно
+        for (int i = n - 2; i >= 0; --i) {
+            if (i + nums[i] >= currentLastPos) {
+                currentLastPos = i;
+            }
+        }
+    
+        return currentLastPos == 0;
+    }
+};
+```
+
+
