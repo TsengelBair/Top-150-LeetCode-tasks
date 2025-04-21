@@ -522,7 +522,7 @@ Explanation: The sum of -1 and 0 is -1. Therefore index1 = 1, index2 = 2. We ret
 
 Очевидно, что решить данную задачу можно полным перебором, но в таком случае сложность будет O(N^2)
 
-Более оптимальным способом является бинарный поиск (сложность логарифм, т.к. на каждой итерации будем отсекать половину)
+Более оптимальным способом является бинарный поиск (сложность логарифм, т.к. на каждой итерации отсекаем половину)
 
 Начинаем итерироваться по массиву
 
@@ -544,3 +544,91 @@ int elemToFind = target - numbers[i];
 2) Проверить является ли он elemToFind, если да -> вернуть его
 3) Если опорный элемент больше, сдвигаем правую границу массива (изначально равна size() - 1) до mid - 1
 4) Если опорный элемент меньше, сдвигаем левую границу (изначально = 0) до mid + 1;
+
+![Иллюстрация](img/167.jpg)
+
+```c++
+int binarySearch(vector<int> &nums, int target) {
+    int left = 0;
+    int right = nums.size() - 1;
+
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+        if (nums[mid] == target) {
+            return mid;
+        } else if (nums[mid] < target) {
+            left = mid + 1;
+        } else if (nums[mid] > target) {
+            right = mid - 1;
+        }
+    } 
+
+    return -1;
+}
+
+vector<int> twoSum(vector<int>& numbers, int target) {
+    vector<int> res;
+    for (int i = 0; i < numbers.size(); ++i) {
+        int elemToFind = target - numbers[i];
+        int find = binarySearch(numbers, elemToFind);
+        if (find != - 1) {
+            res.push_back(i + 1);
+            res.push_back(find + 1);
+            return res;
+        }
+    }
+
+    return res;
+}
+```
+
+Приведенное решение не проходит такой тест кейс, т.к. не учитывает что складывать элемент с самим собой нельзя
+
+```c++
+numbers = [1, 2, 3, 4, 4]   target = 8
+```
+
+Слегка изменим функцию бинарного поиска, просто передав в нее индекс, который нужно пропустить (индекс элемента текущей итерации, т.к. складывать с самим собой нельзя)
+
+В случае, если mid == indexToMiss просто инкрементируем mid (массив отсортирован и мы гарантировано встретим сначала уникальный элемент перед дублем).
+
+**Solution**
+
+```c++
+int binarySearch(vector<int> &nums, int target, int indexToMiss) {
+    int left = 0;
+    int right = nums.size() - 1;
+
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+        if (mid == indexToMiss) {
+            ++mid;
+        }
+
+        if (nums[mid] == target) {
+            return mid;
+        } else if (nums[mid] < target) {
+            left = mid + 1;
+        } else if (nums[mid] > target) {
+            right = mid - 1;
+        }
+    }
+
+    return -1;
+}
+
+vector<int> twoSum(vector<int>& numbers, int target) {
+    vector<int> res;
+    for (int i = 0; i < numbers.size(); ++i) {
+        int elemToFind = target - numbers[i];
+        int find = binarySearch(numbers, elemToFind, i);
+        if (find != - 1) {
+            res.push_back(i + 1);
+            res.push_back(find + 1);
+            return res;
+        }
+    }
+
+    return res;
+}
+```
