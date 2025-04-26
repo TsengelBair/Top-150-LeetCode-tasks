@@ -632,3 +632,91 @@ vector<int> twoSum(vector<int>& numbers, int target) {
     return res;
 }
 ```
+
+## Следующие задачи взяты из раздела  [BinarySearch](https://leetcode.com/studyplan/binary-search/)
+
+
+### 35. Search Insert Position
+
+Дан массив уникальных чисел, отсортированных в порядке возрастания и дано число target.
+
+Необходимо вернуть индекс числа target. В случае если оно отсутствует, вернуть индекс, на который число должно быть вставлено (чтобы массив остался отсортированным).
+
+Сложность должна оставаться logN.
+
+**Пример 1**
+```c++
+Input: nums = [1,3,5,6], target = 5
+Output: 2
+```
+
+**Пример 2**
+```c++
+Input: nums = [1,3,5,6], target = 2
+Output: 1
+```
+
+**Пример 3**
+```c++
+Input: nums = [1,3,5,6], target = 7
+Output: 4
+```
+
+**Решение**
+
+Начнем с очевидных базовых случаев 
+
+```c++
+if (target > nums[nums.size() - 1]) {
+    return nums.size();
+} else if (target < nums[0]) {
+    return 0;
+}
+```
+
+Для решения данной задачи подойдет стандартный бинарный поиск, единственный момент, который добавим алгоритму, это проверка соседнего элемента в отсеченном массиве
+
+![Иллюстрация](img/35.jpg)
+
+То же самое справедливо и для случая, когда nums[mid] < target, но только теперь проверим nums[mid + 1]
+
+**Solution**
+
+```c++
+class Solution {
+    public:
+        int searchInsert(vector<int>& nums, int target) {
+            if (target > nums[nums.size() - 1]) {
+            return nums.size();
+            } else if (target < nums[0]) {
+                return 0;
+            }
+    
+            int indexToInsert = 0; /// чтобы return во всех кейсах, по сути indexToInsert не нужен
+    
+            int left = 0;
+            int right = nums.size() - 1;
+    
+            int mid = 0;
+            while (left <= right) {
+            mid = left + (right - left) / 2;
+            if (nums[mid] == target) {
+                return mid;
+            } else if (nums[mid] < target) {
+                if (mid < nums.size() - 1 && nums[mid + 1] > target) {
+                    return mid + 1;
+                } else {
+                    left = mid + 1;
+                }
+            } else if (nums[mid] > target) {
+                if (mid > 0 && nums[mid - 1] < target) {
+                    return mid;
+                } else {
+                    right = mid - 1;
+                }
+            }
+        }
+        return indexToInsert;
+        }
+    };
+```
