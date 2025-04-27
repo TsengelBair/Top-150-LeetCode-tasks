@@ -644,6 +644,8 @@ vector<int> twoSum(vector<int>& numbers, int target) {
 
 Сложность должна оставаться logN.
 
+[Подробное описание](https://leetcode.com/problems/search-insert-position/?envType=study-plan-v2&envId=binary-search)
+
 **Пример 1**
 ```c++
 Input: nums = [1,3,5,6], target = 5
@@ -717,6 +719,82 @@ class Solution {
             }
         }
         return indexToInsert;
+        }
+    };
+```
+
+### 1351. Count Negative Numbers in a Sorted Matrix
+
+Дан двумерный массив размером m*n, где каждый подмассив отсортирован в порядке убывания, необходимо вернуть количество отрицательных элементов во всем массиве.
+
+[Подробное описание](https://leetcode.com/problems/count-negative-numbers-in-a-sorted-matrix/description/?envType=study-plan-v2&envId=binary-search)
+
+**Пример 1**
+```c++
+Input: grid = [[4,3,2,-1],[3,2,1,-1],[1,1,-1,-2],[-1,-1,-2,-3]]
+Output: 8
+
+Explanation: There are 8 negatives number in the matrix.
+```
+
+**Пример 2**
+```c++
+Input: grid = [[3,2],[1,0]]
+Output: 0
+```
+
+**Решение**
+
+Используем бинарный поиск для каждого подмассива. Если опорный(mid) элемент является отрицательным, добавим в результирующий счетчик разницу между правой и левой границей и еще +1 чтобы учесть текущий отрицательный элемент.
+
+К примеру имеем массив
+
+```c++
+int counter = 0; // для отслеживания кол-ва отрицательных эл-ов
+nums = [1, -1, -2, -2]
+```
+
+```c++
+left = 0; 
+right = nums.size() - 1; // 3
+
+mid = left + (right - left) / 2; // 1 
+
+           mid
+nums = [1, -1, -2, -2]
+
+if nums[mid] < 0
+    counter += right - left + 1; // 3 - 1 + 1 = 3
+    right = mid - 1; // 1 - 1 = 0
+else 
+    left = mid + 1; // в противном случае просто сдвигаем указатель left и ищем в другой половине
+```
+
+
+**Solution**
+
+```c++
+class Solution {
+    public:
+        int countNegatives(vector<vector<int>>& grid) {
+            int counter = 0;
+            for (const auto& array : grid) {
+    
+                int left = 0;
+                int right = array.size() - 1;
+    
+                while (left <= right) {
+                    int mid = left + (right - left) / 2;
+                    if (array[mid] < 0) {
+                        counter += right - mid + 1;
+                        right = mid - 1;
+                    } else {
+                        left = mid + 1;
+                    }
+                }
+            }
+    
+            return counter;
         }
     };
 ```
