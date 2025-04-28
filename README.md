@@ -798,3 +798,103 @@ class Solution {
         }
     };
 ```
+
+
+### 34. Find First and Last Position of Element in Sorted Array
+
+Дан массив целых чисел, отсортированных в порядке возрастания и дано число target.
+
+Необходимо найти стартовый индекс и конечный индекс target числа, в случае если target отсутствует в массиве, вернуть [-1, -1]
+
+Сложность должна оставаться logN.
+
+[Подробное описание](https://leetcode.com/problems/find-first-and-last-position-of-element-in-sorted-array/description/)
+
+**Пример 1**
+```c++
+Input: nums = [5,7,7,8,8,10], target = 8
+Output: [3,4]
+
+```
+
+**Пример 2**
+```c++
+Input: nums = [5,7,7,8,8,10], target = 6
+Output: [-1,-1]
+```
+
+**Пример 3**
+```c++
+Input: nums = [], target = 0
+Output: [-1,-1]
+```
+
+**Решение**
+
+Используем бинарный поиск дважды, в первый раз найдем стартовый индекс, во второй раз конечный.
+
+В функции поиска стартового индекса, в случае нахождения target числа, запоминаем его в результирующую переменную и сдвигаем границу right, чтобы продолжить поиск в левой части подмассива.
+
+Во второй функции поиска конечного элемента, в случае нахождения target, также запоминаем его в перменную и сдвигаем границу left, чтобы продолжить поиск в правой части подмассива
+
+**Solution**
+
+```c++
+class Solution {
+public:
+    // поиск стартового target эл-та
+    int findFirst(vector<int>& nums, int target){
+        int startIndex = -1;
+
+        int left = 0;
+        int right = nums.size() - 1;
+
+        int mid = 0; // чтобы не создавать переменную в цикле
+        while (left <= right) {
+            mid = left + (right - left) / 2;
+            if (nums[mid] == target) {
+                startIndex = mid;
+                right = mid - 1; // продолжаем поиск стартового индекса в левом подмассивве
+            } else if (nums[mid] < target) {
+                left = mid + 1;
+            } else if (nums[mid] > target) {
+                right = mid - 1;
+            }
+        }
+
+        return startIndex;
+    }
+
+    // поиск конечного target эл-та
+    int findLast(vector<int>& nums, int target){
+        int lastIndex = -1;
+
+        int left = 0;
+        int right = nums.size() - 1;
+
+        int mid = 0; 
+        while (left <= right) {
+            mid = left + (right - left) / 2;
+            if (nums[mid] == target) {
+                lastIndex = mid;
+                left = mid + 1; // продолжаем поиск конечного индекса в правом подмассивве
+            } else if (nums[mid] < target) {
+                left = mid + 1;
+            } else if (nums[mid] > target) {
+                right = mid - 1;
+            }
+        }
+
+        return lastIndex;
+    }
+
+    vector<int> searchRange(vector<int>& nums, int target) {
+        vector<int> res(2);
+
+        res[0] = findFirst(nums, target);
+        res[1] = findLast(nums, target);
+        
+        return res;
+    }
+};
+```
