@@ -898,3 +898,120 @@ public:
     }
 };
 ```
+
+## Задача не из раздела Top 150
+
+### 2115. Find All Possible Recipes from Given Supplies
+
+На вход подается массив рецептов, двумерный массив ингридиентов, где каждому [i] рецепту, соответствует [i] массив ингридиентов и массив доступных ингридиентов.
+
+Необходимо найти всевозможные рецепты (блюда), который можно приготовить из доступных ингридиентов.
+
+[Подробное описание](https://leetcode.com/problems/find-all-possible-recipes-from-given-supplies/description/)
+
+
+**Пример 1**
+```c++
+Input: recipes = ["bread"], ingredients = [["yeast","flour"]], supplies = ["yeast","flour","corn"]
+
+Output: ["bread"]
+Explanation:
+We can create "bread" since we have the ingredients "yeast" and "flour".
+
+```
+
+**Пример 2**
+```c++
+Input: recipes = ["bread","sandwich"], ingredients = [["yeast","flour"],["bread","meat"]], supplies = ["yeast","flour","meat"]
+
+Output: ["bread","sandwich"]
+Explanation:
+We can create "bread" since we have the ingredients "yeast" and "flour".
+We can create "sandwich" since we have the ingredient "meat" and can create the ingredient "bread".
+```
+
+**Пример 3**
+```c++
+Input: recipes = ["bread","sandwich","burger"], ingredients = [["yeast","flour"],["bread","meat"],["sandwich","meat","bread"]], supplies = ["yeast","flour","meat"]
+
+Output: ["bread","sandwich","burger"]
+Explanation:
+We can create "bread" since we have the ingredients "yeast" and "flour".
+We can create "sandwich" since we have the ingredient "meat" and can create the ingredient "bread".
+We can create "burger" since we have the ingredient "meat" and can create the ingredients "bread" and "sandwich".
+```
+
+**Решение**
+
+Предполагается решение через топологическую сортировку, но пока что решу в лоб следующим образом:
+
+1) Создать словарь "книга рецептов", т.к. на основе этого словаря будем пытаться приготовить блюдо
+
+2) Создать hashSet со всеми возможными ингридиентами, не вектор, т.к. будут частые операции поиска
+
+3) В случае если найдено новое блюдо, его необходимо добавить в hashSet со всеми возможными ингридиентами и заново осуществить проверку по словарю, т.к. новое блюдо  может быть составным ингридиентом к другому блюду
+
+**Solution**
+
+```c++
+vector<string> findAllRecipes(vector<string>& recipes, vector<vector<string>>& ingredients, vector<string>& supplies) {
+    vector<string> res;
+    /// книга рецептов
+    unordered_map<string, vector<string>> recipeBook;
+    for (int i = 0; i < recipes.size(); ++i) {
+        recipeBook[recipes[i]] = ingredients[i];
+    }
+
+    /// всевозможные ингридиенты - те что есть изначально и те, которые приготовим
+    unordered_set<string> allPossibleSupplies;
+    for (int i = 0 ; i < supplies.size(); ++i) {
+        allPossibleSupplies.insert(supplies[i]);
+    }
+
+    /// если нашли новый рецепт (блюдо) в allPossibleSupplies, значит нужно перепроверить, можем ли еще приготовить что то
+    /// т.к. вставленный рецепт (блюдо) может быть ингридиентом другого рецепта (блюда)
+    bool newDishFound = true;
+    while (newDishFound) {
+        newDishFound = false;
+
+        for (const auto& recipe : recipeBook) {
+            const string& _recipe = recipe.first;
+            const vector<string>& neededSupplies = recipe.second;
+
+            /// проверяем можем ли приготовить блюдо из книги рецептов
+            bool canCook = true;
+            for (int i = 0; i < neededSupplies.size(); ++i) {
+                if (allPossibleSupplies.find(neededSupplies[i]) == allPossibleSupplies.end()) {
+                    canCook = false;
+                }
+            }
+
+            /// проверяем не был ли ранее добавлен рецепт, чтобы не зациклиться
+            if (canCook && allPossibleSupplies.find(_recipe) == allPossibleSupplies.end()) {
+                res.push_back(_recipe);
+                allPossibleSupplies.insert(_recipe);
+                newDishFound = true;
+            }
+        }
+    }
+
+    return res;
+}
+
+
+int main(int argc, char *argv[])
+{
+    vector<string> recipes = {"bread", "sandwich", "burger"};
+    vector<vector<string>> ingredients = {{"yeast", "flour"},{"bread", "meat"},{"sandwich", "meat", "bread"}};
+    vector<string> supplies = {"yeast", "flour", "meat"};
+
+    vector<string> res = findAllRecipes(recipes, ingredients, supplies);
+    for (const string& elem : res) {
+        std::cout << elem << " ";
+    }
+
+    std::cout << std::endl;
+    return 0;
+}
+
+```
